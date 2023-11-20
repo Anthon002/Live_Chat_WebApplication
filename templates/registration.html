@@ -6,6 +6,22 @@
     <title>Document</title>
 </head>
 <body>
-    Registration Page
+    <form method="post">
+        {{ form.csrf_token }}
+
+        <label for="Username"> Username </label>
+        {{ form.Username.label }}
+        {{ form.Username }}
+
+        <label for="Password"> Password </label>
+        {{ form.Password.label }}
+        {{ form.Password}}
+
+        <label for="ConfirmPassword"> Confirm Password </label>
+        {{ form.ConfirmPassword.label}}
+        {{ form.ConfirmPassword}}
+
+        {{form.Submit}}
+    </form>
 </body>
 </html>
