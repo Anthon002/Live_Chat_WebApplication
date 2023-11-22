@@ -6,6 +6,12 @@
     <title>Document</title>
 </head>
 <body>
-    LoginPage
+    <form method="POST">
+        {{ form.csrf_token}}
+
+        {{form.Username}}
+        {{form.Password}}
+        {{form.Submit}}
+    </form>
 </body>
 </html>
