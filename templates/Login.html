@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,4 +14,81 @@
         {{form.Submit}}
     </form>
 </body>
-</html>
+</html> -->
+
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="content-section container">
+    <form method="POST" action="">
+        <!-- to protect our form from attacks -->
+        {{form.hidden_tag()}}
+        <!-- form protection end -->
+
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Log In</legend>
+
+            <!-- we pass in our fields from the forms here -->
+
+            <div class="form-group">
+                <!-- username label -->
+                {{form.Username.label(class="form-control-label")}}
+
+                <!-- username field -->
+                {% if form.Username.errors %}
+                {{form.Username(class="form-control form-control-lg is-invalid")}}
+                <div class="invalid-feedback">
+                    {% for error in form.Username.errors %}
+                    <span>{{error}}</span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+
+                {{form.Username(class="form-control form-control-lg")}}
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+                <!-- password label -->
+                {{form.Password.label(class="form-control-label")}}
+
+                <!-- password field -->
+                {% if form.Password.errors %}
+                {{form.Password(class="form-control form-control-lg is-invalid")}}
+                <div class="invalid-feedback">
+                    {% for error in form.Password.errors %}
+                    <span>{{error}}</span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+
+                {{form.Password(class="form-control form-control-lg")}}
+
+                {% endif %}
+
+            </div>
+
+        </fieldset>
+
+        <div class="form-group">
+            {{form.Submit(class="btn btn-outline-info")}}
+        </div>
+
+        <small class="text-muted ml-2">
+            <a href="#">Forgot Password</a>
+        </small>
+    </form>
+</div>
+
+<div class="border-top pt-3">
+    <small class="text-muted">
+        Need an account? <a class="ml-2" href="{{url_for('registration')}}">Register</a>
+    </small>
+</div>
+{% endblock %}
+
