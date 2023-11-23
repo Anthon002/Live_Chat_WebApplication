@@ -40,6 +40,8 @@ def registration():
             db.session.add(newuser)
             db.session.commit()
     return render_template("Registration.html", form = form)
+
+
 @app.route("/login", methods=["POST","GET"])
 def login():
     form = Login()
@@ -53,6 +55,8 @@ def login():
                login_user(user)
                return redirect(url_for("home"))
     return render_template("Login.html", form=form)
+
+
 
 @app.route("/home")
 def home():
