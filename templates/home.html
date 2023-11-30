@@ -1,6 +1,46 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    {% if current_user %}
+        <p>
+            <span>Username: </span>
+            <span>{{authUser.username}}</span>
+        </p>
+        <div id="messages">
 
-<h1>Hello world</h1>
-{% endblock%}
+        </div>
+            <input type="hidden" id="username" value="{{authUser.username}}">
+            <input id="message" type="text">
+            <input id="submit" type="submit" value="send">
+
+        <script type="text/JavaScript">
+            // console.log("hello world")
+            // $(document).ready(function(){
+            //     var socket = io.connect('http://' + document.domain +':' + location.port)
+            // socket.on("connect", function(){
+            //     socket.send("User Connected!")
+            // })
+            // socket.on("message", function(data){
+            //     $('#messages').append('<p>').text(data)
+            // })
+            // $('#submit').on('Click', function(data){
+            //     socket.send($('#username').val() + ':' + $('#message').val() )
+            //     $('#message').val = ''
+            // })
+            // })
+            var socket = io.connect('http://' + document.domain + ':' + location.port)
+            var submit = document.getElementById("submit")
+           // var message = document.getElementById("message").innerHTML;
+            submit.addEventListener("click", function(){
+                let message = document.getElementById("message").value;
+                console.log("submit button clicked")
+                socket.emit("message", message);
+            })
+            socket.on("messageSendBack", function(data){
+                document.getElementById("messages").innerHTML = data["username"]+":" + data["message"]
+            })
+        </script>
+    {% endif %}
+{% endblock %}
