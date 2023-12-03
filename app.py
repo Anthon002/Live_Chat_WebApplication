@@ -16,8 +16,10 @@ login_manager.init_app(app)
 login_manager.login_view ="login"
 db = SQLAlchemy(app)
 
-authUsername = None
-authId = None
+authUsername = None #This is for getting the signed in user's username
+authId = None #userId
+roomUserId = None #This is for getting the userId to be used as a roomId
+
 class AuthUser():
     def __init__(self, username, id):
         '''
@@ -61,6 +63,7 @@ def registration():
         else:
             db.session.add(newuser)
             db.session.commit()
+            return redirect(url_for("Index"))
     return render_template("Registration.html", form = form)
 
 
@@ -76,7 +79,7 @@ def login():
            checkPassword = bcrypt.check_password_hash(user.password, passWord)
            if checkPassword:
                login_user(user)
-               return redirect(url_for("home"))
+               return redirect(url_for("Index"))
     return render_template("Login.html", form=form)
 
 
@@ -89,16 +92,30 @@ def home():
     authUser = AuthUser(authUsername,authId)
     return render_template("home.html", current_user=current_user, authUser = authUser)
 
-@socketio.on('connect')
-def handle_connect():
-    authUser = AuthUser(authUsername, authId)
-    print(authUser.username + "User Connected")
+@app.route('/Index/', methods=["Get","POST"])
+def Index():
+    users = db.session.query(User).all()
+    return render_template("Index.html", users = users)
+
+#handles the private chat template
+@app.route('/chat/<userId>', methods=['GET', 'POST'])
+def privateChatPage(userId):
+    global roomUserId
+    roomUserId = userId
+    return render_template('chat.html', roomUserId = roomUserId)
 
 @socketio.on('message')
 def handle_messages(message):
     print("Message Recieved :" + message)
     user = AuthUser(authUsername, authId)
     emit("messageSendBack",{"message": message, "username": user.username}, broadcast= True )
+
+@socketio.on(str(roomUserId)+'_message')
+def privateChatEvent(data):
+    userObj = User(authUsername,authId)
+    username = userObj.username
+    emit(roomUserId+"_privateMessageSendBack", {"message": data, "username":username}, broadcast= True)
+
 
 if __name__ == "__main__":
     #app.run(debug=True)

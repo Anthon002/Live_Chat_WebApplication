@@ -1,0 +1,30 @@
+<!-- This will be the private chat area -->
+
+{% extends "layout.html" %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+
+<div id="messages">
+
+</div>
+<input type="text" id="message">
+<input type="submit" id="submit" value="Send">
+
+<script>
+    let socket = io.connect('http://'+ document.domain + ':' + location.port + '/chat/{{roomUserId}}')
+    let btn = document.getElementById('submit')
+
+    btn.addEventListener("click", function(){
+        let message = document.getElementById("message").value;
+        console.log('Button clicked')
+        socket.emit('{{roomUserId}}_message', message)
+    })
+    socket.on('{{userId}}_privateMessageSendBack', function(data){
+        document.getElementById("messages"). innerHTML = data['username'] + ':' + data['message']
+        document.getElementById("message").value = ''
+    })
+</script>
+
+{% endblock %}
