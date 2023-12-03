@@ -83,7 +83,7 @@ def login():
     return render_template("Login.html", form=form)
 
 
-
+@app.route("/")
 @app.route("/home")
 def home():
     user = None
@@ -119,4 +119,5 @@ def privateChatEvent(data):
 
 if __name__ == "__main__":
     #app.run(debug=True)
-    socketio.run(app , host="localhost", debug = True)
+    # socketio.run(app , host="localhost", debug = True)
+    socketio.run(app , debug = True)
