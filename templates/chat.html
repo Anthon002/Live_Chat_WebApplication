@@ -13,18 +13,20 @@
 <input type="submit" id="submit" value="Send">
 
 <script>
-    let socket = io.connect('http://'+ document.domain + ':' + location.port + '/chat/{{roomUserId}}')
-    let btn = document.getElementById('submit')
+    window.onload = () => {
+        var socket = io.connect('http://' + document.domain + ':' + location.port )
+        var submit = document.getElementById("submit")
 
-    btn.addEventListener("click", function(){
-        let message = document.getElementById("message").value;
-        console.log('Button clicked')
-        socket.emit('{{roomUserId}}_message', message)
-    })
-    socket.on('{{userId}}_privateMessageSendBack', function(data){
-        document.getElementById("messages"). innerHTML = data['username'] + ':' + data['message']
-        document.getElementById("message").value = ''
-    })
+        socket.emit("joinRoom",{ "username": "{{username}}", "channelName":"{{roomUserId}}"} )
+        submit.addEventListener("click", function(){
+            let message = document.getElementById("message").value;
+            console.log("submit button clicked")
+            socket.emit("message", {"channelName": "{{roomUserId}}", "message": message} );
+        })
+        socket.on("messageSendBack", function(data){
+            document.getElementById("messages").innerHTML = data["username"]+":" + data["message"]
+        })
+    }
 </script>
 
 {% endblock %}

@@ -22,9 +22,9 @@
             submit.addEventListener("click", function(){
                 let message = document.getElementById("message").value;
                 console.log("submit button clicked")
-                socket.emit("message", message);
+                socket.emit("Generalmessage", message);
             })
-            socket.on("messageSendBack", function(data){
+            socket.on("GeneralMessageSendBack", function(data){
                 document.getElementById("messages").innerHTML = data["username"]+":" + data["message"]
             })
         </script>

@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from forms.authenticationForm import Registration, Login
 from uuid import uuid4
 from flask_bcrypt import Bcrypt
-from flask_socketio import SocketIO, send, emit
+from flask_socketio import SocketIO, send, emit, join_room
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins = "*")
@@ -63,6 +63,7 @@ def registration():
         else:
             db.session.add(newuser)
             db.session.commit()
+            authenticatin(user.username, user.id) #The global variables have been changed
             return redirect(url_for("Index"))
     return render_template("Registration.html", form = form)
 
@@ -83,7 +84,6 @@ def login():
     return render_template("Login.html", form=form)
 
 
-@app.route("/")
 @app.route("/home")
 def home():
     user = None
@@ -92,29 +92,54 @@ def home():
     authUser = AuthUser(authUsername,authId)
     return render_template("home.html", current_user=current_user, authUser = authUser)
 
-@app.route('/Index/', methods=["Get","POST"])
+@app.route('/', methods=["Get","POST"])
 def Index():
+    user = None
+    if current_user.is_authenticated is False:
+        return redirect(url_for("login"))
+    authUser = AuthUser(authUsername, authId)
     users = db.session.query(User).all()
-    return render_template("Index.html", users = users)
+    return render_template("Index.html", users = users, userID = authUser.id)
 
 #handles the private chat template
 @app.route('/chat/<userId>', methods=['GET', 'POST'])
 def privateChatPage(userId):
     global roomUserId
     roomUserId = userId
-    return render_template('chat.html', roomUserId = roomUserId)
+    roomusername = db.session.query(User).filter_by(id = roomUserId).first().username
+    user = AuthUser(authUsername, authId)
+    return render_template('chat.html', roomUserId = roomUserId, roomusername = roomusername, username = user.username)
+
+@socketio.on('Generalmessage')
+def handle_generalMessage(message):
+    user = AuthUser(authUsername, authId)
+    emit("GeneralMessageSendBack", { "message": message, "username": user.username }, broadcast = True)
 
 @socketio.on('message')
 def handle_messages(message):
-    print("Message Recieved :" + message)
     user = AuthUser(authUsername, authId)
-    emit("messageSendBack",{"message": message, "username": user.username}, broadcast= True )
+    # allowed_users = [str(message["channelName"]), str(user.id)]
+    # connected_clients = socketio.server.manager.get_participants(room=message["channelName"], namespace='/')
+    # for client in connected_clients:
+    #     client_user_id = socketio.server.manager.rooms[client][0]
+    #     if client_user_id in allowed_users:
+    emit("messageSendBack", {"message": message["message"], "username": user.username}, room=message["channelName"])
+    #print("Message Received: " + message["message"])
 
-@socketio.on(str(roomUserId)+'_message')
-def privateChatEvent(data):
-    userObj = User(authUsername,authId)
-    username = userObj.username
-    emit(roomUserId+"_privateMessageSendBack", {"message": data, "username":username}, broadcast= True)
+
+
+
+# @socketio.on('Privatemessage')
+# def privateChatEvent(Privatemessage):
+#     userObj = User(authUsername,authId)
+#     username = userObj.username
+#     print(Privatemessage)
+#     emit("privateMessageSendBack", {"message": Privatemessage, "username":username}, broadcast= True)
+
+@socketio.on('joinRoom')
+def joinRoom(data):
+    print(data["username"] + 'Has joined ' + data["channelName"])
+    join_room(data['channelName'])
 
 
 if __name__ == "__main__":

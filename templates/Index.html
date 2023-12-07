@@ -1,10 +1,15 @@
 <!-- This page would be the page users are first redirected to when they are signed in  -->
 {% extends "Layout.html" %}
 
+
 {% block content %}
     <div id="usersList">
+        General Chat Room: <a href="/home"> Here </a> <br>
+
         {% for user in users %}
+        {% if user.Id != userID %}
             chat with <span><a href="/chat/{{user.id}}"> {{user.username}}</a></span> <br>
+        {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
