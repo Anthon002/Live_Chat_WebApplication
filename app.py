@@ -101,6 +101,18 @@ def Index():
     users = db.session.query(User).all()
     return render_template("Index.html", users = users, userID = authUser.id)
 
+@app.route('/landingPage/')
+def LandingPage():
+    return render_template("landingpage.html")
+
+@app.route('/features')
+def Features():
+    return render_template("features.html")
+
+@app.route('/about')
+def About():
+    return render_template("about.html")
+
 #handles the private chat template
 @app.route('/chat/<userId>', methods=['GET', 'POST'])
 def privateChatPage(userId):

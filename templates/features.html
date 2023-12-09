@@ -1,0 +1,34 @@
+{% include "layout.html"%}
+{% block body %}
+
+    <div class="featuresContainer">
+        <p> Features</p>
+        <div class="features">
+            <div class="feature1">
+                <p class="feature1Name"> Registration </p>
+                <img src="{{url_for('static', filename='images/registration.png')}}">
+                <p class="feature1Description">
+                    This feature allows users to be registered with Live Chat inorder to be given access to use it
+                </p>
+            </div>
+
+            <div class="feature2">
+                <p class="feature2Name"> Login </p>
+                <img src="{{url_for('static', filename='images/login.png')}}">
+                <p class="feature2Description">
+                    This feature grants registered users access to the web application
+                </p>
+            </div>
+
+            <div class="feature3">
+                <p class="feature3Name"> Live Chat </p>
+                <img src="{{url_for('static', filename='images/livechat.png')}}">
+                <p class="feature1Description">
+                    This feature allows registered users to send and recieve messages in real time
+                </p>
+            </div>
+        </div>
+        
+    </div>
+
+{% endblock %}

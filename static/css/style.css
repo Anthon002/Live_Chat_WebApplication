@@ -39,5 +39,26 @@
 }
 
 .create-btn {
-    width: 100%
+    width: 100%;
+}
+
+.CoverImgcontainer {
+    position: absolute;
+    margin-left: 40vw;
+    margin-top: 15vh;
+}
+
+.projectName {
+    font-weight: 900;
+    font-size: 40px;
+    margin-left: 2vw;
+}
+.oneliner {
+    font-weight: 900;
+    font-size: 20px;
+    margin-right: 5vw;
+}
+
+.features img{
+    width: 50vw;
 }

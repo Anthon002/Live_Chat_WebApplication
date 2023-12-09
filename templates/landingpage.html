@@ -1,0 +1,15 @@
+{% include "layout.html"%}
+
+{% block body%}
+    <nav>
+        <ul>
+            <li><a href="/about">About</a></li>
+            <li><a href="/features">Features</a></li>
+        </ul>
+    </nav>
+    <div class="CoverImgcontainer">
+        <img src="{{url_for('static', filename='images/cover.png')}}" class="coverimg" alt=""> 
+        <p class="projectName"> Live Chat </p>
+        <p class="oneliner"> Chat in real time, connections that click. </p>
+    </div>
+{% endblock %}
